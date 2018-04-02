@@ -81,6 +81,5 @@ namespace Basic3D
             gravityOffset = standardGravityAxis = Input.acceleration;
         }
 
-
     }
 }

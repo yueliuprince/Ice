@@ -134,9 +134,6 @@ namespace FogOfWar
                 }
                 Thread.Sleep(1);
             }
-#if UNITY_EDITOR
-            Debug.Log("FOW thread exit!");
-#endif
         }
 
         void OnDrawGizmosSelected()
