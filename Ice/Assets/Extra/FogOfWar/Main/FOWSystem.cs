@@ -44,13 +44,7 @@ namespace FogOfWar
 
         public bool enableFog = true;
         public Texture2D FogTexture { get; private set; }
-        public void RenderImmediately()
-        {
-            UpdateBuffer();
-            mState = State.UpdateTexture;
-            UpdateTexture();
-            blendFactor = 1.0f;
-        }
+        
         static public void AddRevealer(FOWAbstractRevealer rev) { if (rev != null) lock (mAdded) mAdded.Add(rev); }
         static public void DelRevealer(FOWAbstractRevealer rev) { if (rev != null) lock (mRemoved) mRemoved.Add(rev); }
 
@@ -79,22 +73,12 @@ namespace FogOfWar
             GetComponentInChildren<Projector>(true).gameObject.SetActive(true);
         }
 
-        public void OnDestroy()
+        public void RenderImmediately()
         {
-            if (mThread != null)
-            {
-                mThreadWork = false;
-                mThread.Join();
-                mThread = null;
-            }
-            mBuffer0 = null;
-            mBuffer1 = null;
-            mBuffer2 = null;
-            if (FogTexture != null)
-            {
-                Destroy(FogTexture);
-                FogTexture = null;
-            }
+            UpdateBuffer();
+            mState = State.UpdateTexture;
+            UpdateTexture();
+            blendFactor = 1.0f;
         }
 
         void Update()
@@ -324,6 +308,24 @@ namespace FogOfWar
             cx = Mathf.Clamp(cx, 0, textureSize - 1);
             cy = Mathf.Clamp(cy, 0, textureSize - 1);
             return mBuffer0[cx + cy * textureSize].g > 0;
+        }
+
+        public void OnDestroy()
+        {
+            if (mThread != null)
+            {
+                mThreadWork = false;
+                mThread.Join();
+                mThread = null;
+            }
+            mBuffer0 = null;
+            mBuffer1 = null;
+            mBuffer2 = null;
+            if (FogTexture != null)
+            {
+                Destroy(FogTexture);
+                FogTexture = null;
+            }
         }
     }
 }

@@ -6,10 +6,11 @@ Shader "xiao_D/Effect/Billboard" {
 		_MainTex ("Main Tex", 2D) = "white" {}
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_VerticalBillboarding ("Vertical Restraints", Range(0, 1)) = 1 
+		_VertexScale("Texture Scale",Range(0,2))=1
 	}
 	SubShader {
 		// Need to disable batching because of the vertex animation
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "DisableBatching"="True"}
+		Tags {"Queue"="Transparent" "IgnoreProjector"="False" "RenderType"="Transparent" "DisableBatching"="True"}
 		
 		Pass { 
 			Tags { "LightMode"="ForwardBase" }
@@ -29,6 +30,7 @@ Shader "xiao_D/Effect/Billboard" {
 			float4 _MainTex_ST;
 			fixed4 _Color;
 			fixed _VerticalBillboarding;
+			float _VertexScale;
 			
 			struct a2v {
 				float4 vertex : POSITION;
@@ -41,8 +43,9 @@ Shader "xiao_D/Effect/Billboard" {
 			};
 			
 			v2f vert (a2v v) {
-				v2f o;
-				
+				v2f o;		
+				v.vertex *= _VertexScale;
+
 				// Suppose the center in object space is fixed
 				float3 center = float3(0, 0, 0);
 				float3 viewer = mul(unity_WorldToObject,float4(_WorldSpaceCameraPos, 1));

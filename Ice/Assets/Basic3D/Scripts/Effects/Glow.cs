@@ -5,16 +5,17 @@ public class Glow : MonoBehaviour
 
     public AnimationCurve curve;
     [Range(0, 1)] public float wave = 0f;
-    private Vector3 startLocalScale;
+    private Material mat;
 
     private void Awake()
     {
-        startLocalScale = transform.localScale;
+        mat = GetComponent<Renderer>().material;
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.localScale = Vector3.LerpUnclamped(startLocalScale * curve.Evaluate(Time.time), startLocalScale, wave);
+        float scale = Mathf.LerpUnclamped(curve.Evaluate(Time.time), 1, wave);
+        mat.SetFloat("_VertexScale", scale);
     }
 }

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b41875db904fb24429f527cb50f1181f
+timeCreated: 1522744349
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_PersistentViewDataDictionary: {instanceID: 0}
+  - defaultMap: {fileID: 1842999322198854, guid: 94ce7d2221ab78a49afe7ff3aa8a8f9d,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

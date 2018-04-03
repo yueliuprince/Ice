@@ -67,16 +67,18 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Scale: 1
     - _ShadowRamp: 1
     - _Speed: 0.2
     - _SrcBlend: 1
     - _UVSec: 0
     - _UseLightMap: 1
+    - _VertexScale: 1
     - _VerticalBillboarding: 1
     - _ZWrite: 1
     m_Colors:
     - _AmbientColour1: {r: 0.5, g: 0.5, b: 0.5, a: 0}
-    - _Color: {r: 1, g: 1, b: 0, a: 1}
+    - _Color: {r: 0.8455882, g: 0.8455882, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightColour0: {r: 1, g: 1, b: 1, a: 0}
     - _LightColour1: {r: 1, g: 1, b: 1, a: 0}
