@@ -76,7 +76,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Alpha: 1
-    - _Alpha_add: 0.138
+    - _Alpha_add: 0.319
     - _Bands: 1.36
     - _BumpScale: 1
     - _Cutoff: 0.5
