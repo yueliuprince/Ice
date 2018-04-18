@@ -233,5 +233,4 @@
 		}
 	} 
 	FallBack "Unlit/Transparent"
-	CustomEditor "MK.XRay.MKXRayFreeEditor"
 }

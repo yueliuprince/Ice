@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "xiao_D/PostEffect/Gaussian Blur" {
+Shader "xiao_D/PostEffects/Gaussian Blur" {
 	Properties {
 		_MainTex ("Base (RGB)", 2D) = "white" {}
 		_BlurSize ("Blur Size", Float) = 1.0

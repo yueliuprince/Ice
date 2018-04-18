@@ -39,15 +39,11 @@ public class UpdateBar : MonoBehaviour
         }
         set {
             linearTarget = FormatSlashValue(value);
-
-            //make effect...
             if (makeEffect)
             {
+                if (linearTarget > currSlashValue) effect.fillAmount = linearTarget / maxSlashValue;
+                else fill.fillAmount = linearTarget / maxSlashValue;
                 effect.gameObject.SetActive(true);
-
-                float posX = linearTarget / maxSlashValue * Xmax;
-                effectPos = new Vector2(posX, 0);
-                effect.localPosition = (Vector3)effectPos + fill.localPosition;
             }
         }
     }
@@ -63,12 +59,15 @@ public class UpdateBar : MonoBehaviour
         }
     }
 
-    [SerializeField] private float Xmax = 393f;          //这个东西和进度条长度有关
-    [SerializeField] private bool byMaskMove = true;     //值为true则控制mask移动
+    public enum DisplayMode
+    {
+        Null,
+        SingleValue,
+        Percentage,
+        Slash,
+    }
 
-
-    public bool usePercentage = false;
-    public bool useSlash = false;
+    public DisplayMode displayMode = DisplayMode.Null;
 
     [SerializeField] private float maxSlashValue = 100;
     /// <summary>
@@ -88,22 +87,21 @@ public class UpdateBar : MonoBehaviour
     private float lineSpeed;
     private float slashRatePerFrame;
 
-    private Transform mask, fill, effect;
+    private Transform mask;
+    private Image fill, effect;
     private Text valueText;
     private Vector2 effectPos;
 
     private void Awake()
     {
         mask = transform.Find("mask");
-        fill = mask.Find("fill");
-        effect = mask.Find("effect");
+        fill = mask.Find("fill").GetComponent<Image>();
+        effect = mask.Find("effect").GetComponent<Image>();
         effect.gameObject.SetActive(false);
 
         valueText = transform.Find("valueText").GetComponent<Text>();
 
         lineSpeed = lineSpeed_percentage * maxSlashValue;      //to slashValue
-
-        if (makeEffect && !byMaskMove) Q.WarningPrint(transform, GetType().ToString(), "Unsupport making effect without maskmove.");
         if (isShared) m_CanvasGroup = GetComponent<CanvasGroup>();
     }
 
@@ -147,30 +145,30 @@ public class UpdateBar : MonoBehaviour
         currSlashValue = FormatSlashValue(currSlashValue);
         value = currSlashValue / maxSlashValue;
 
-        float posX = (1 - value) * Xmax;
-
-        if (usePercentage)
+        switch (displayMode)
         {
-            valueText.text = (value * 100).ToString("0") + "%";
-        }
-        else if (useSlash)
-        {
-            valueText.text = currSlashValue.ToString("0") + "/" + maxSlashValue.ToString("0");
+            case DisplayMode.Null: break;
+            case DisplayMode.Percentage: valueText.text = (value * 100).ToString("0") + "%"; break;
+            case DisplayMode.Slash: valueText.text = currSlashValue.ToString("0") + "/" + maxSlashValue.ToString("0"); break;
+            case DisplayMode.SingleValue: valueText.text = ((int)currSlashValue).ToString(); break;
         }
 
-        if (byMaskMove)
+        if (linearTarget > -0.5f)
         {
-            mask.localPosition = new Vector3(-posX, mask.localPosition.y, mask.localPosition.z);
-            fill.localPosition = new Vector3(posX, fill.localPosition.y, fill.localPosition.z);
-            if (makeEffect && linearTarget > -0.5f)
+            if (makeEffect)
             {
-                effect.localPosition = (Vector3)effectPos + fill.localPosition;
+                if (linearTarget > currSlashValue) fill.fillAmount = value;
+                else effect.fillAmount = value;
             }
+            else fill.fillAmount = value;
         }
-        else
-        {
-            fill.localPosition = new Vector3(-posX, fill.localPosition.y, fill.localPosition.z);
-        }
+        else fill.fillAmount = value;
+    }
+
+    public void Init(Vector2 curr_max)
+    {
+        MaxSlashValue = curr_max.y;
+        currSlashValue = curr_max.x;
     }
 
 

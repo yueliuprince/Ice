@@ -33,17 +33,20 @@ public abstract class BaseSkill : MonoBehaviour
     [SerializeField] private GameObject skillTimer = null;
     private SkillTimer m_SkillTimer;
 
-    protected void Init() {
-        if (skillTimer) {
+    protected void Init()
+    {
+        if (skillTimer)
+        {
             m_SkillTimer = skillTimer.GetComponent<SkillTimer>();
             m_SkillTimer.ColdDownTime = this.coldDownTime;
-            m_SkillTimer.TimeOut += Reset;
+            m_SkillTimer.OnTimeOut(Reset);
         }
     }
 
-    private void Reset(GameObject from) { isCd = false; }
+    private void Reset() { isCd = false; }
 
-    public void ResetCd() {
+    public void ResetCd()
+    {
         isCd = false;
         if (m_SkillTimer) m_SkillTimer.ResetCd();
         else StopCoroutine("InnerTimer");
@@ -51,10 +54,12 @@ public abstract class BaseSkill : MonoBehaviour
 
     protected abstract void _UseSkill();
 
-    public bool UseSkill() {
+    public bool UseSkill()
+    {
         if (isCd) return false;
         if (m_Actor.m_State.mp < magicCost) return false;
-        else {
+        else
+        {
             m_Actor.m_State.Change_MP(-magicCost);
         }
         _UseSkill();
@@ -66,7 +71,8 @@ public abstract class BaseSkill : MonoBehaviour
         return true;
     }
 
-    IEnumerator InnerTimer() {
+    IEnumerator InnerTimer()
+    {
         yield return new WaitForSeconds(coldDownTime);
         isCd = false;
     }

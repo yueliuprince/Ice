@@ -12,11 +12,8 @@ public enum Group
 
 public enum CType
 {
-    untagged = -1,
-    boom = 0, flag = 1,
-    two, three, four, five, six, seven,         //remove "8" because it seems like infinite
-    nine = 9,
-    infinite,
+    Player,
+    Obstacle,
 }
 
 /// <summary>
@@ -25,17 +22,43 @@ public enum CType
 [DefaultExecutionOrder(-100)]
 public class Chess : MonoBehaviour, IEffect_Selected
 {
-    public CType type = CType.two;
+    public CType type;
     public Group group = Group.orange;
-    public TileNode myNode;
+    public TileNode mainNode;
 
-    public Vector2Int NodePos { get { return myNode.pos; } }
+    public Vector2Int NodePos { get { return mainNode.pos; } }
+    public Vector3 WorldPos { get { return transform.position; } }
 
     private SpriteRenderer baseRenderer;
+    protected Vector3 PlanePos(TileNode node)
+    {
+        Vector3 tPos = node.WorldPos;
+        tPos.y = WorldPos.y;
+        return tPos;
+    }
 
     private void Awake()
     {
         baseRenderer = GetComponent<SpriteRenderer>();
+        OnAwake();
+    }
+    protected virtual void OnAwake() { }
+
+
+    /// <summary>
+    /// Return true after the node changed
+    /// </summary>
+    public bool SetMainNode(TileNode node)
+    {
+        if (node != mainNode) LeaveCurrentNode();
+        else return false;
+        mainNode = node;
+        if (mainNode && mainNode.chess == null) mainNode.chess = this;
+        return true;
+    }
+    public void LeaveCurrentNode()
+    {
+        if (mainNode && mainNode.chess == this) mainNode.Clear();
     }
 
     public bool IsOpposite(Chess c)
@@ -48,7 +71,7 @@ public class Chess : MonoBehaviour, IEffect_Selected
     /// </summary>
     public List<TileNode> ConnectedNodes()
     {
-        return myNode.ConnectedNodes();
+        return mainNode.ConnectedNodes();
     }
 
     public void Effect_Selected()

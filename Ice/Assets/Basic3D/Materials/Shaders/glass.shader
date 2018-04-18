@@ -2,7 +2,7 @@
 //Write the code in [ForwardBase pass] to dispose the extra 4 per-vertex and SH light 
 //[Phong] light model
 
-Shader "xiao_D/glass" {
+Shader "xiao_D/Transparent/glass" {
     Properties {
 		_Diffuse("Diffuse", Color) = (0.6,0.6,0.6,1)
 		_Glass("Glass", Range(0, 1)) = 0.974

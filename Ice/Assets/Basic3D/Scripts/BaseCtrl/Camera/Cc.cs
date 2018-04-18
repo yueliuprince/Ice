@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public class Cc : MonoBehaviour
 {
 
@@ -12,7 +13,7 @@ public class Cc : MonoBehaviour
 
     void Awake()
     {
-        startSize = Screen.height / 200;
+        startSize = Screen.height / 200f;
         cameraMoveRate = 1 / (startSize / Camera.main.orthographicSize * 100);
     }
 
@@ -37,7 +38,8 @@ public class Cc : MonoBehaviour
         if (rmDown)
         {
             Vector3 dir = Input.mousePosition - mpLastFrame;
-            Camera.main.transform.Translate(-dir * cameraMoveRate, Space.Self);
+            transform.Translate(-dir * cameraMoveRate, Space.Self);
+
             mpLastFrame = Input.mousePosition;
         }
         if (Input.GetMouseButtonDown(1))
