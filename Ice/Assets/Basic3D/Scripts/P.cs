@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using System.Collections.Generic;
 
 /// <summary>
 /// 全局单例类，包括静态全局变量和静态函数。
@@ -17,54 +18,42 @@ public class P : MonoBehaviour
         based = 30,
     }
 
-
     public static P PUBLIC;
 
-    public bool debugMode = true;
-    public Text debugText;
+    public bool displayFps = true;
+    public Text fpsText;
 
     [SerializeField] private bool openStartEffect = true;
     public float startEffectDuration = 2.5f;
-    private CanvasGroup transMaskCg;
-    private WaterWave wwr;
-    public GameObject colorMask;
     private string currentScene;
     public FramePerSecond fps = FramePerSecond.good;
 
     // Use this for initialization
-    void Awake() {
+    void Awake()
+    {
         PUBLIC = this;
 
         Application.targetFrameRate = (int)fps;
         currentScene = SceneManager.GetActiveScene().name;
+    }
 
-        if (debugMode) {
-            debugText = GameObject.Find("Canvas/DebugText").GetComponent<Text>();
+    private void Start()
+    {
+        if (displayFps)
+        {
+            fpsText = GameObject.Find("Canvas/DebugText").GetComponent<Text>();
             StartCoroutine(DisPlayFPS());
         }
 
-        colorMask = GameObject.Find("Canvas/colorMask");
-        transMaskCg = colorMask.GetComponent<CanvasGroup>();
-        wwr = Camera.main.GetComponent<WaterWave>();
-
-        if (openStartEffect) {
-
-            transMaskCg.alpha = 0.9f;
-            transMaskCg.DOFade(0, startEffectDuration).SetEase<Tween>(Ease.OutQuad);
-
-            if (wwr) StartCoroutine(Wr());
+        if (openStartEffect)
+        {
+            ImageEffects.PUBLIC.PlayEffect(ImageEffects.EffectType.Brighten, startEffectDuration);
         }
     }
 
-    IEnumerator Wr() {
-        wwr.enabled = true;
-        yield return new WaitForSecondsRealtime(startEffectDuration);
-        wwr.enabled = false;
-    }
 
-
-
-    public GameObject MakeEffect(GameObject effect, Vector3 pos, float destroyDelay = 1f) {
+    public GameObject MakeEffect(GameObject effect, Vector3 pos, float destroyDelay = 1f)
+    {
         GameObject newEffect = Instantiate(effect);
         newEffect.transform.position = pos;
         Destroy(newEffect, destroyDelay);
@@ -72,19 +61,60 @@ public class P : MonoBehaviour
     }
 
 
-    IEnumerator DisPlayFPS() {
-        while (true) {
+
+
+
+
+    #region AudioPlayer
+    private Stack<AudioSource> bufferPool = new Stack<AudioSource>();
+    public void PlaySound(AudioClip clip, float vol = 1f)
+    {
+        if (clip == null) return;
+        AudioSource ac;
+        if (bufferPool.Count > 0) ac = bufferPool.Pop();
+        else
+        {
+            GameObject obj = new GameObject("sound");
+            obj.transform.parent = this.transform;
+            ac = obj.AddComponent<AudioSource>();
+        }
+        ac.clip = clip;
+        ac.volume = vol;
+        ac.Play();
+        StartCoroutine(PushAudioToBuffer(ac));
+    }
+
+    private IEnumerator PushAudioToBuffer(AudioSource ac)
+    {
+        while (true)
+        {
+            yield return new WaitForEndOfFrame();
+            if (ac.isPlaying == false)
+            {
+                bufferPool.Push(ac);
+                break;
+            }
+        }
+    }
+    #endregion
+
+    #region SceneHelper
+    IEnumerator DisPlayFPS()
+    {
+        while (true)
+        {
             float dt = 0;
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 10; i++)
+            {
                 dt += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            debugText.text = "FPS:" + (10.0f / dt).ToString();
+            fpsText.text = "FPS:" + (10.0f / dt).ToString(".00");
         }
     }
 
-
-    private IEnumerator _LoadSceneWithEffect(string name, float dur) {
+    private IEnumerator _LoadSceneWithEffect(string name, float dur)
+    {
         AsyncOperation async = SceneManager.LoadSceneAsync(name);
         async.allowSceneActivation = false;
 
@@ -97,18 +127,21 @@ public class P : MonoBehaviour
 
 
 
-    public void LoadSceneWithEffect(string name, float dur = 1.5f) {
+    public void LoadSceneWithEffect(string name, float dur = 1.5f)
+    {
         StartCoroutine(_LoadSceneWithEffect(name, dur));
     }
 
-    public void ReLoadCurrentScene(float dur = 1.5f) {
+    public void ReLoadCurrentScene(float dur = 1.5f)
+    {
+        ImageEffects.PUBLIC.PlayEffect(ImageEffects.EffectType.Darken, dur);
         Invoke("_ReLoadCurrentScene", dur);
-        colorMask.GetComponent<Image>().color = Color.black;
-        transMaskCg.DOFade(1, dur);
     }
 
-    private void _ReLoadCurrentScene() {
-        SceneManager.LoadSceneAsync(currentScene);
+    private void _ReLoadCurrentScene()
+    {
+        SceneManager.LoadScene(currentScene);
     }
+    #endregion
 
 }

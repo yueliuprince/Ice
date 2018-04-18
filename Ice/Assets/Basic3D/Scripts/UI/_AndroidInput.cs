@@ -11,51 +11,84 @@ public class _AndroidInput : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 
     [SerializeField] private float radius = 140f;
     private Vector2 startPos;
-    private Vector2 currVector;
     private CanvasGroup canvasGroup;
     private float startAlpha;
+    [Range(0, 1)] [SerializeField] private float invaildPercentage = 0.25f;
+    private float sqrInvaildRadius;
 
-
-    private void Awake() {
+    private void Awake()
+    {
         PUBLIC = this;
         startPos = transform.position;
         canvasGroup = GetComponentInParent<CanvasGroup>();
         startAlpha = canvasGroup.alpha;
+
+        sqrInvaildRadius = radius * invaildPercentage * radius * invaildPercentage;
     }
 
-    public Vector2 InputAxis { get { return currVector; } }
-
-    public Vector2 GradientAxis { get { return currVector / radius; } }
-
-    public Vector2 NormalAxis { get { return currVector.normalized; } }
-
-    public Vector2 AbsAxis {
+    private Vector2 currentVector;
+    public Vector2 InputAxis {
         get {
-            Vector2 result = Vector2.zero;
-            if (currVector.x > 0) result.x = 1;
-            if (currVector.x < 0) result.x = -1;
-            if (currVector.y > 0) result.y = 1;
-            if (currVector.y < 0) result.y = -1;
+            if (currentVector.sqrMagnitude < sqrInvaildRadius) return Vector2.zero;
+            return currentVector;
+        }
+        private set {
+            currentVector = value;
+        }
+    }
+
+    public Vector2 GradientAxis { get { return InputAxis / radius; } }
+
+    public Vector2 NormalAxis { get { return InputAxis.normalized; } }
+
+    public Vector2Int AbsAxis {
+        get {
+            Vector2Int result = Vector2Int.zero;
+            if (InputAxis.x > 0) result.x = 1;
+            if (InputAxis.x < 0) result.x = -1;
+            if (InputAxis.y > 0) result.y = 1;
+            if (InputAxis.y < 0) result.y = -1;
             return result;
         }
     }
 
-    
+    public Vector2Int AbsAxisFor_4Dir {
+        get {
+            if (InputAxis == Vector2.zero) return Vector2Int.zero;
+            Vector2Int result = Vector2Int.zero;
+            if (Mathf.Abs(InputAxis.x) > Mathf.Abs(InputAxis.y))
+            {
+                if (InputAxis.x > 0) result.x = 1;
+                if (InputAxis.x < 0) result.x = -1;
+            }
+            else
+            {
+                if (InputAxis.y > 0) result.y = 1;
+                if (InputAxis.y < 0) result.y = -1;
+            }
+            return result;
+        }
+    }
 
-    public void OnPointerUp(PointerEventData eventData) {
+
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
         canvasGroup.alpha = startAlpha;
         transform.position = startPos;
-        currVector = Vector2.zero;
+        InputAxis = Vector2.zero;
     }
 
-    public void OnDrag(PointerEventData eventData) {
-        currVector = Vector2.ClampMagnitude(eventData.position - startPos, radius);
-        transform.position = currVector + startPos;
+    public void OnDrag(PointerEventData eventData)
+    {
+        InputAxis = Vector2.ClampMagnitude(eventData.position - startPos, radius);
+        transform.position = InputAxis + startPos;
     }
 
-    public void OnPointerDown(PointerEventData eventData) {
+    public void OnPointerDown(PointerEventData eventData)
+    {
         canvasGroup.alpha = 1;
-        currVector = Vector2.ClampMagnitude(eventData.position - startPos, radius);
-        transform.position = currVector + startPos;
+        InputAxis = Vector2.ClampMagnitude(eventData.position - startPos, radius);
+        transform.position = InputAxis + startPos;
     }
 }

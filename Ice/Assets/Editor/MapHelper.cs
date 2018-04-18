@@ -41,7 +41,8 @@ public class MapHelper : ScriptableWizard
                         GameObject obj = Instantiate(go);
                         obj.transform.position = new Vector3(0, go.transform.position.y, 0);
 
-                        obj.transform.SetParent(nodes[i].transform, true);
+                        if (obj.GetComponent<Chess>() == null) obj.transform.SetParent(nodes[i].transform, true);
+
                         nodes[i].AlignToThis(obj.transform);
                     }
                     break;

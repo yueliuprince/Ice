@@ -29,10 +29,10 @@ public class AlignAllChess : ScriptableWizard
             bool result = Physics.Raycast(cs[i].transform.position + Vector3.up * 5, Vector3.down, out hit, Mathf.Infinity, nodeLayer);
             if (result)
             {
-                cs[i].myNode = hit.transform.GetComponent<TileNode>();
-                cs[i].myNode.chess = cs[i];
+                cs[i].mainNode = hit.transform.GetComponent<TileNode>();
+                cs[i].mainNode.chess = cs[i];
 
-                cs[i].myNode.ResetCurrentChess(cs[i]);
+                cs[i].mainNode.ResetCurrentChess(cs[i]);
             }
             else
             {

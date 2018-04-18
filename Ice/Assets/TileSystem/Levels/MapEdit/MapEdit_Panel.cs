@@ -6,7 +6,7 @@ namespace MainLogic.UI
 {
     public class MapEdit_Panel : MonoBehaviour, IPointerClickHandler
     {
-        public NType nodeType = NType.basic;
+        public NType nodeType = NType.Basic;
         public static MapEdit_Panel CurrPanel { get; private set; }
         public static GameObject pointer2;
         public Sprite mySprite;
@@ -19,7 +19,7 @@ namespace MainLogic.UI
 
         private void Awake()
         {
-            if (nodeType == NType.basic)
+            if (nodeType == NType.Basic)
             {
                 pointer2 = new GameObject("pointer2");
                 pointer2.transform.localScale *= 0.32f;

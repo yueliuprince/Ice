@@ -127,6 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 140
+  invaildPercentage: 0.5
 --- !u!222 &222532206993379576
 CanvasRenderer:
   m_ObjectHideFlags: 1

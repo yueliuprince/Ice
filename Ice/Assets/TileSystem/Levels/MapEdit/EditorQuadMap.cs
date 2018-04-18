@@ -7,7 +7,7 @@ namespace EditorTemp
     public class Temp
     {
         public Vector2Int size;
-        public NType type = NType.basic;
+        public NType type = NType.Basic;
         public Vector2Int pos;
         public float sideLength;
     }
@@ -132,11 +132,11 @@ public class EditorQuadMap : QuadMap
 
         switch (node.type)
         {
-            case NType.basic: target.GetComponent<SpriteRenderer>().sprite = basic.GetComponent<SpriteRenderer>().sprite; break;
-            case NType.camp: target.GetComponent<SpriteRenderer>().sprite = camp.GetComponent<SpriteRenderer>().sprite; break;
-            case NType.home: target.GetComponent<SpriteRenderer>().sprite = home.GetComponent<SpriteRenderer>().sprite; break;
-            case NType.obstacle: target.GetComponent<SpriteRenderer>().sprite = obstacle.GetComponent<SpriteRenderer>().sprite; break;
-            case NType.quick: target.GetComponent<SpriteRenderer>().sprite = quick.GetComponent<SpriteRenderer>().sprite; break;
+            case NType.Basic: target.GetComponent<SpriteRenderer>().sprite = basic.GetComponent<SpriteRenderer>().sprite; break;
+            case NType.Other: target.GetComponent<SpriteRenderer>().sprite = camp.GetComponent<SpriteRenderer>().sprite; break;
+            case NType.Obstacle: target.GetComponent<SpriteRenderer>().sprite = home.GetComponent<SpriteRenderer>().sprite; break;
+            case NType.NULL: target.GetComponent<SpriteRenderer>().sprite = obstacle.GetComponent<SpriteRenderer>().sprite; break;
+            case NType.Quick: target.GetComponent<SpriteRenderer>().sprite = quick.GetComponent<SpriteRenderer>().sprite; break;
         }
     }
 

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public enum NType
 {
-    basic,
-    quick,
-    camp,
-    home,
-    obstacle,
+    Basic,
+    Quick,
+    Other,
+    Obstacle,
+    NULL,
 }
 
 [DefaultExecutionOrder(-100)]
@@ -17,8 +17,9 @@ public class TileNode : MonoBehaviour, IEffect_Selected
 
     private SpriteRenderer myRenderer;
     static Vector2Int[] dir = new Vector2Int[4] { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
-    public NType type = NType.basic;
+    public NType type = NType.Basic;
     public Vector2Int pos;
+    public Vector3 WorldPos { get { return transform.position; } }
     public Chess chess;
 
 
@@ -61,31 +62,31 @@ public class TileNode : MonoBehaviour, IEffect_Selected
 
         switch (type)
         {
-            case NType.obstacle: return cNodes;
-            case NType.basic:
-            case NType.camp:
-            case NType.home:
+            case NType.NULL: return cNodes;
+            case NType.Basic:
+            case NType.Other:
+            case NType.Obstacle:
                 {
                     for (int i = 0; i < 4; i++) CheckPos(pos + dir[i]);
-                    CheckPos(leftDown, NType.camp);
-                    CheckPos(leftDown + Vector2Int.up * 2, NType.camp);
-                    CheckPos(rightUp, NType.camp);
-                    CheckPos(leftDown + Vector2Int.right * 2, NType.camp);
+                    CheckPos(leftDown, NType.Other);
+                    CheckPos(leftDown + Vector2Int.up * 2, NType.Other);
+                    CheckPos(rightUp, NType.Other);
+                    CheckPos(leftDown + Vector2Int.right * 2, NType.Other);
                     break;
                 }
 
-            case NType.quick:
+            case NType.Quick:
                 {
                     for (int i = 0; i < 4; i++)
                     {
                         Vector2Int nextPos = pos + dir[i];
                         TileNode node = CheckPos(nextPos);
-                        if (node != null && node.chess == null && node.type == NType.quick)
+                        if (node != null && node.chess == null && node.type == NType.Quick)
                         {
                             do
                             {
                                 nextPos += dir[i];
-                                node = CheckPos(nextPos, NType.quick);
+                                node = CheckPos(nextPos, NType.Quick);
                             }
                             while (node != null && node.chess == null);
                         }
@@ -111,7 +112,7 @@ public class TileNode : MonoBehaviour, IEffect_Selected
     {
         if (c == null) return;
         this.chess = c;
-        chess.myNode = this;
+        chess.mainNode = this;
 
         Vector3 alignPos = transform.position;
         alignPos.y = c.transform.position.y;

@@ -28,13 +28,18 @@ public class QuadMap : MonoBehaviour
     }
 
 
-    public TileNode Find(Vector2Int pos, bool ignoreObstacle = true)
+    public Vector3 GetWorldDir(Vector2Int localDir)
+    {
+        return new Vector3(localDir.y, 0, -localDir.x);
+    }
+
+    public TileNode Find(Vector2Int pos, bool ignoreNull = true)
     {
         if (pos.x >= 0 && pos.x < size.x && pos.y >= 0 && pos.y < size.y)
         {
-            if (ignoreObstacle)
+            if (ignoreNull)
             {
-                if (m[pos.x, pos.y].type == NType.obstacle) return null;
+                if (m[pos.x, pos.y].type == NType.NULL) return null;
             }
             return m[pos.x, pos.y];
         }

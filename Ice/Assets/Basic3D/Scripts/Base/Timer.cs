@@ -14,23 +14,28 @@ public class Timer : MonoBehaviour
         }
     }
 
+    public float Progress { get { return 1 - (restTime / coldDownTime); } }
+
     public bool isCd = false;
 
-    public event Action<GameObject> TimeOut;
-
+    protected Action TimeOut;
     protected virtual void _AfterUpdate() { }
 
-    // Update is called once per frame
-    void Update() {
+    public void OnTimeOut(Action callBack) { TimeOut += callBack; }
+
+    void LateUpdate()
+    {
         if (!isCd) return;
 
-        if (restTime > 0f) {
+        if (restTime > 0f)
+        {
             restTime -= Time.deltaTime;
             isCd = true;
         }
-        else {
+        else
+        {
             isCd = false;
-            if (TimeOut != null) TimeOut(this.gameObject);
+            if (TimeOut != null) TimeOut();
         }
         _AfterUpdate();
     }
@@ -39,9 +44,12 @@ public class Timer : MonoBehaviour
     /// <summary>
     /// 重置冷却时间
     /// </summary>
-    public void ResetCd() {
+    public void ResetCd()
+    {
         isCd = true;
         restTime = coldDownTime;
     }
+
+
 
 }
