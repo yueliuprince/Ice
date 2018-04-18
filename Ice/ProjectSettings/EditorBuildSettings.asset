@@ -4,4 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/start.unity
+    guid: 64a879b24899a964c82d0111f5106a71
+  - enabled: 1
+    path: Assets/Levels/level1.unity
+    guid: a68aa5faf8d35f142bcc4a4681cab921
+  - enabled: 1
+    path: Assets/TileSystem/Levels/MapEdit/mapEdit.unity
+    guid: ca3b47ba34a13b74499816c6a7a776b3
